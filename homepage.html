@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Bank & Services Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            min-height: 100vh;
+            background: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                min-height: 85vh;
+                max-height: 90vh;
+                border-radius: 24px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+                overflow: hidden;
+                margin: 20px;
+            }
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 10;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        .user-info h4 {
+            font-size: 15px;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .logout-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .logout-link:hover {
+            color: #ef4444;
+        }
+
+        .desktop-nav {
+            display: none;
+            gap: 24px;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .desktop-nav a.active,
+        .desktop-nav a:hover {
+            color: #4f46e5;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                padding: 28px;
+                padding-bottom: 28px;
+            }
+        }
+
+        .search-bar-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-icon-inside {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            color: #374151;
+            margin: 24px 0 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        /* Accounts Grid */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .accounts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 900px) {
+            .accounts-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .bank-card {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bank-card.secondary {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+        }
+
+        .bank-card.credit {
+            background: linear-gradient(135deg, #dc2626, #f43f5e);
+            box-shadow: 0 10px 20px -5px rgba(244, 63, 94, 0.3);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .card-balance-container {
+            margin: 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-balance {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .check-balance-btn, .hide-balance-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .check-balance-btn:hover, .hide-balance-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-family: monospace;
+            opacity: 0.9;
+        }
+
+        /* Services Grid Layout */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (min-width: 600px) {
+            .services-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 16px;
+                padding: 20px;
+            }
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #374151;
+            gap: 8px;
+            padding: 8px 4px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .service-item:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .service-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 11px;
+            gap: 4px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .nav-item.active {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-item.scan-btn {
+            position: relative;
+            top: -16px;
+        }
+
+        .scan-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+            border: 4px solid #ffffff;
+        }
+
+        /* Modal Base */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: modalUp 0.2s ease-out;
+        }
+
+        @keyframes modalUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-card h3 {
+            color: #1f2937;
+            margin-bottom: 6px;
+            font-size: 18px;
+        }
+
+        .modal-card p {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 22px;
+            letter-spacing: 14px;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-btn.submit {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .modal-btn.submit:hover {
+            background: #4338ca;
+        }
+
+        .modal-btn.cancel {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* Camera Scanner Modal UI */
+        .scanner-view {
+            width: 100%;
+            height: 220px;
+            background: #111827;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .scanner-target {
+            width: 140px;
+            height: 140px;
+            border: 2px dashed #6366f1;
+            border-radius: 12px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { border-color: #6366f1; }
+            to { border-color: #10b981; }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            z-index: 300;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav { display: none; }
+            .desktop-nav { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast">Action completed successfully!</div>
+
+    <div class="app-container">
+
+        <header class="header">
+            <div class="user-profile" onclick="showToast('Profile: Sampaths-Team Active')">
+                <div class="avatar">ST</div>
+                <div class="user-info">
+                    <h4>Sampaths-Team</h4>
+                    <p>● Online · Verified</p>
+                </div>
+            </div>
+
+            <nav class="desktop-nav">
+                <a href="#" class="active" onclick="switchTab('home')">Home</a>
+                <a href="#services" onclick="focusSearch()">Services</a>
+                <a href="#" onclick="openScanModal()">Scan & Pay</a>
+                <a href="#" onclick="openHistoryModal()">History</a>
+                <a href="#" onclick="openContactModal()">Contact</a>
+            </nav>
+
+            <a href="#" class="logout-link" onclick="confirmLogout()">Logout</a>
+        </header>
+
+        <main class="content">
+
+            <div class="search-bar-container">
+                <span class="search-icon-inside">🔍</span>
+                <input type="text" id="serviceSearch" class="search-input" placeholder="Search bills, recharges, tickets, stocks..." onkeyup="filterServices()">
+            </div>
+
+            <h3 class="section-title">Accounts & Cards</h3>
+            <div class="accounts-grid">
+                <div class="bank-card">
+                    <div class="card-top">
+                        <span>Checking Account</span>
+                        <span>VISA</span>
+                    </div>
+                    <div class="card-balance-container">
+                        <button class="check-balance-btn" id="btn-acc1" onclick="openPinModal('acc1')">Check Balance</button>
+                        <div class="card-balance" id="acc1" style="display: none;">$8,430.50</div>
+                        <button class="hide-balance-btn" id="hide-acc1" style="display: none;" onclick="hideBalance('acc1')">Hide</button>
+                    </div>
+                    <div class="card-bottom">
+                        <span>•••• 4829</span>
+                        <span>EXP 08/28</span>
+                    </div>
+                </div>
+
+                <div class="bank-card secondary">
+                    <div class="card-top">
+                        <span>High-Yield Savings</span>
+                        <span>SAVINGS</span>
+                    </div>
+                    <div class="card-balance-container">
+                        <button class="check-balance-btn" id="btn-acc2" onclick="openPinModal('acc2')">Check Balance</button>
+                        <div class="card-balance" id="acc2" style="display: none;">$24,150.00</div>
+                        <button class="hide-balance-btn" id="hide-acc2" style="display: none;" onclick="hideBalance('acc2')">Hide</button>
+                    </div>
+                    <div class="card-bottom">
+                        <span>•••• 9102</span>
+                        <span>4.5% APY</span>
+                    </div>
+                </div>
+
+                <div class="bank-card credit">
+                    <div class="card-top">
+                        <span>Rewards Credit Card</span>
+                        <span>MASTERCARD</span>
+                    </div>
+                    <div class="card-balance-container">
+                        <button class="check-balance-btn" id="btn-acc3" onclick="openPinModal('acc3')">Check Balance</button>
+                        <div class="card-balance" id="acc3" style="display: none;">$1,240.10</div>
+                        <button class="hide-balance-btn" id="hide-acc3" style="display: none;" onclick="hideBalance('acc3')">Hide</button>
+                    </div>
+                    <div class="card-bottom">
+                        <span>•••• 3341</span>
+                        <span>Limit: $10,000</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Recharge & Bill Payments</h3>
+            <div class="services-grid">
+                <button class="service-item" data-name="recharge" onclick="openServiceModal('Mobile Recharge', 'Mobile Number', 'e.g. 9876543210')">
+                    <div class="service-icon">📱</div>
+                    <span class="service-label">Recharge</span>
+                </button>
+                <button class="service-item" data-name="electricity current" onclick="openServiceModal('Electricity Bill', 'Consumer ID / Account No.', 'e.g. ELEC-90210')">
+                    <div class="service-icon">⚡</div>
+                    <span class="service-label">Electricity</span>
+                </button>
+                <button class="service-item" data-name="water" onclick="openServiceModal('Water Utility', 'Connection Number', 'e.g. WTR-88123')">
+                    <div class="service-icon">💧</div>
+                    <span class="service-label">Water</span>
+                </button>
+                <button class="service-item" data-name="gas cylinder" onclick="openServiceModal('Gas Cylinder Booking', 'LPG Consumer ID', 'e.g. LPG-44910')">
+                    <div class="service-icon">🔥</div>
+                    <span class="service-label">Gas Cylinder</span>
+                </button>
+            </div>
+
+            <h3 class="section-title">Bookings & Travel</h3>
+            <div class="services-grid">
+                <button class="service-item" data-name="movies cinema ticket" onclick="openServiceModal('Movie Ticket Booking', 'Select Movie / Theater', 'e.g. Cinema Hall 4')">
+                    <div class="service-icon">🎬</div>
+                    <span class="service-label">Movies/Cinema</span>
+                </button>
+                <button class="service-item" data-name="flights ticket travel" onclick="openServiceModal('Flight Booking', 'Destination City', 'e.g. NYC to London')">
+                    <div class="service-icon">✈️</div>
+                    <span class="service-label">Flights</span>
+                </button>
+                <button class="service-item" data-name="bus tickets travel" onclick="openServiceModal('Bus Tickets', 'Route / Travel Date', 'e.g. Express Route 10')">
+                    <div class="service-icon">🚌</div>
+                    <span class="service-label">Bus Tickets</span>
+                </button>
+                <button class="service-item" data-name="trips hotels booking" onclick="openServiceModal('Trips & Hotel Booking', 'Destination / Hotel Name', 'e.g. Grand Resort')">
+                    <div class="service-icon">🧳</div>
+                    <span class="service-label">Trips/Hotels</span>
+                </button>
+            </div>
+
+            <h3 class="section-title">Investments & Protection</h3>
+            <div class="services-grid">
+                <button class="service-item" data-name="tradings stocks market" onclick="openServiceModal('Trading & Stocks Portal', 'Stock Ticker Symbol', 'e.g. AAPL, TSLA')">
+                    <div class="service-icon">📈</div>
+                    <span class="service-label">Trading</span>
+                </button>
+                <button class="service-item" data-name="insurances policy protection" onclick="openServiceModal('Insurance Renewal', 'Policy Number', 'e.g. POL-99201')">
+                    <div class="service-icon">🛡️</div>
+                    <span class="service-label">Insurances</span>
+                </button>
+            </div>
+
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('home')">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" onclick="focusSearch()">
+                <span class="nav-icon">🔍</span>
+                <span>Search</span>
+            </button>
+            <button class="nav-item scan-btn" onclick="openScanModal()">
+                <div class="scan-icon">📷</div>
+                <span style="margin-top: 2px;">Scan</span>
+            </button>
+            <button class="nav-item" onclick="openHistoryModal()">
+                <span class="nav-icon">📜</span>
+                <span>History</span>
+            </button>
+            <button class="nav-item" onclick="openContactModal()">
+                <span class="nav-icon">🎧</span>
+                <span>Contact</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <div class="modal-overlay" id="pinModal">
+        <div class="modal-card">
+            <h3>Enter Security PIN</h3>
+            <p>Please enter your 4-digit PIN to view account details.</p>
+            
+            <input type="password" id="pinInput" class="pin-input" maxlength="4" placeholder="••••">
+            <div class="error-msg" id="errorMsg">Incorrect PIN. Try 1234.</div>
+
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closePinModal()">Cancel</button>
+                <button class="modal-btn submit" onclick="verifyPin()">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="serviceModal">
+        <div class="modal-card">
+            <h3 id="modalTitle">Service Title</h3>
+            <p>Fill out the details below to proceed.</p>
+            
+            <div class="form-group">
+                <label id="modalFieldLabel">Identifier</label>
+                <input type="text" id="modalFieldInput" class="form-input" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>Payment Amount ($)</label>
+                <input type="number" id="modalAmountInput" class="form-input" placeholder="0.00" value="50.00">
+            </div>
+
+            <div class="form-group">
+                <label>Pay From Account</label>
+                <select class="form-select">
+                    <option>Checking Account (•••• 4829)</option>
+                    <option>High-Yield Savings (•••• 9102)</option>
+                    <option>Rewards Credit Card (•••• 3341)</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeServiceModal()">Cancel</button>
+                <button class="modal-btn submit" onclick="processPayment()">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="scanModal">
+        <div class="modal-card">
+            <h3>QR Code Scanner</h3>
+            <p>Align QR code within the frame to pay instantly.</p>
+            
+            <div class="scanner-view">
+                <div class="scanner-target"></div>
+                <span style="margin-top: 10px; font-size: 12px; color: #9ca3af;">Scanning for Merchant QR...</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeScanModal()">Close</button>
+                <button class="modal-btn submit" onclick="simulateScanSuccess()">Simulate Scan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-card">
+            <h3>Recent Transactions</h3>
+            <p>Your recent account activity.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto; text-align: left;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px;">
+                    <div><strong>Mobile Recharge</strong><br><small style="color:#6b7280;">Today, 10:45 AM</small></div>
+                    <span style="color:#ef4444; font-weight:bold;">-$25.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px;">
+                    <div><strong>Salary Deposit</strong><br><small style="color:#6b7280;">Yesterday</small></div>
+                    <span style="color:#10b981; font-weight:bold;">+$4,200.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px;">
+                    <div><strong>Cinema Booking</strong><br><small style="color:#6b7280;">22 Aug 2026</small></div>
+                    <span style="color:#ef4444; font-weight:bold;">-$32.50</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeHistoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-card">
+            <h3>Contact Support</h3>
+            <p>We are available 24/7 for assistance.</p>
+            
+            <div style="text-align: left; font-size: 14px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <div>📞 <strong>Toll-Free:</strong> 1-800-555-0199</div>
+                <div>✉️ <strong>Email:</strong> support@superbank.com</div>
+                <div>💬 <strong>Live Chat:</strong> Average wait 1 min</div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeContactModal()">Close</button>
+                <button class="modal-btn submit" onclick="showToast('Initiating Live Chat...'); closeContactModal();">Start Chat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTargetId = null;
+        const DEFAULT_PIN = "1234";
+
+        /* Balance Security Functions */
+        function openPinModal(targetId) {
+            currentTargetId = targetId;
+            document.getElementById('pinInput').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('pinModal').classList.add('active');
+            document.getElementById('pinInput').focus();
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.remove('active');
+            currentTargetId = null;
+        }
+
+        function verifyPin() {
+            const enteredPin = document.getElementById('pinInput').value;
+            if (enteredPin === DEFAULT_PIN) {
+                if (currentTargetId) {
+                    document.getElementById(currentTargetId).style.display = 'block';
+                    document.getElementById('btn-' + currentTargetId).style.display = 'none';
+                    document.getElementById('hide-' + currentTargetId).style.display = 'inline-block';
+                }
+                closePinModal();
+                showToast("Identity verified successfully!");
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        function hideBalance(targetId) {
+            document.getElementById(targetId).style.display = 'none';
+            document.getElementById('btn-' + targetId).style.display = 'inline-block';
+            document.getElementById('hide-' + targetId).style.display = 'none';
+        }
+
+        /* Service Modal Dialogs */
+        function openServiceModal(title, fieldLabel, placeholder) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalFieldLabel').innerText = fieldLabel;
+            document.getElementById('modalFieldInput').placeholder = placeholder;
+            document.getElementById('modalFieldInput').value = '';
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        function processPayment() {
+            const val = document.getElementById('modalFieldInput').value;
+            if (!val) {
+                alert("Please complete the required field.");
+                return;
+            }
+            closeServiceModal();
+            showToast("Payment processing successful!");
+        }
+
+        /* Search Filter */
+        function filterServices() {
+            const query = document.getElementById('serviceSearch').value.toLowerCase();
+            const items = document.querySelectorAll('.service-item');
+
+            items.forEach(item => {
+                const name = item.getAttribute('data-name');
+                if (name.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function focusSearch() {
+            const input = document.getElementById('serviceSearch');
+            input.focus();
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        /* QR Scanner Modal */
+        function openScanModal() { document.getElementById('scanModal').classList.add('active'); }
+        function closeScanModal() { document.getElementById('scanModal').classList.remove('active'); }
+        function simulateScanSuccess() {
+            closeScanModal();
+            openServiceModal('Merchant Instant Payment', 'Merchant UPI / QR ID', 'merchant@bank');
+        }
+
+        /* Additional Modal Controllers */
+        function openHistoryModal() { document.getElementById('historyModal').classList.add('active'); }
+        function closeHistoryModal() { document.getElementById('historyModal').classList.remove('active'); }
+
+        function openContactModal() { document.getElementById('contactModal').classList.add('active'); }
+        function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
+
+        /* Toast Popup Notification */
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                showToast("Logged out successfully.");
+            }
+        }
+
+        function switchTab(tabName) {
+            showToast("Navigated to " + tabName);
+        }
+    </script>
+
+</body>
+</html>
